@@ -8,4 +8,6 @@ export const fetchApi = async (url) => {
       "x-rapidapi-host": "bayut.p.rapidapi.com",
     },
   });
+
+  return data;
 };

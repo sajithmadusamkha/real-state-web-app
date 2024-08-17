@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
 import { baseUrl, fetchApi } from "./utils/fetchApi";
+import Property from "./components/Property";
 
 const Banner = ({
   purpose,
@@ -42,10 +43,16 @@ const Banner = ({
   </Flex>
 );
 
-export default function Home({ propertyForSale, propertyForRent }) {
+export default async function Home() {
+  const propertyForSale = await fetchApi(
+    `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-sale&hitsPerPage=6`
+  );
+  const propertyForRent = await fetchApi(
+    `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-rent&hitsPerPage=6`
+  );
+
   return (
     <Box>
-      <h1>Hello World</h1>
       <Banner
         purpose="RENT A HOME"
         title="Rent a homes for"
@@ -56,7 +63,11 @@ export default function Home({ propertyForSale, propertyForRent }) {
         linkName="/search?purpose=for-rent"
         imageUrl="https://bayut-production.s3.eu-central-1.amazonaws.com/image/145426814/33973352624c48628e41f2ec460faba4"
       />
-      <Flex flexWrap="wrap"></Flex>
+      <Flex flexWrap="wrap">
+        {propertyForRent?.hits.map((property) => (
+          <Property property={property} key={property.id} />
+        ))}
+      </Flex>
       <Banner
         purpose="BUY A HOME"
         title="Find, Buy & own your"
@@ -67,22 +78,27 @@ export default function Home({ propertyForSale, propertyForRent }) {
         linkName="/search?purpose=for-sale"
         imageUrl="https://bayut-production.s3.eu-central-1.amazonaws.com/image/110993385/6a070e8e1bae4f7d8c1429bc303d2008"
       />
+      <Flex flexWrap="wrap">
+        {propertyForSale?.hits.map((property) => (
+          <Property property={property} key={property.id} />
+        ))}
+      </Flex>
     </Box>
   );
 }
 
-export async function getStaticProperties() {
-  const propertyForSale = await fetchApi(
-    `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-sale&hitsPerPage=6`
-  );
-  const propertyForRent = await fetchApi(
-    `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-rent&hitsPerPage=6`
-  );
+// export async function getStaticProps() {
+//   const propertyForSale = await fetchApi(
+//     `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-sale&hitsPerPage=6`
+//   );
+//   const propertyForRent = await fetchApi(
+//     `${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-rent&hitsPerPage=6`
+//   );
 
-  return {
-    props: {
-      propertyForSale: propertyForSale?.hits,
-      propertyForRent: propertyForRent?.hits,
-    },
-  };
-}
+//   return {
+//     props: {
+//       propertiesForSale: propertyForSale?.hits,
+//       propertiesForRent: propertyForRent?.hits,
+//     },
+//   };
+// }
