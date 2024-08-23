@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { Flex, Box, Text, Icon } from "@chakra-ui/react";
 import { BsFilter } from "react-icons/bs";
+import SearchFilters from "../components/SearchFilters";
 
 const Search = () => {
   const [searchFilters, setSearchFilters] = useState(false);
@@ -22,8 +23,9 @@ const Search = () => {
         onClick={() => setSearchFilters((prevFilters) => !prevFilters)}
       >
         Search Property By a Filters.
+        <Icon paddingLeft="2" icon={<BsFilter />}></Icon>
       </Flex>
-      <Icon paddingLeft="2" icon={<BsFilter />}></Icon>
+      {searchFilters && <SearchFilters />}
     </Box>
   );
 };
